@@ -1,12 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Episode, VideoItem } from '../types';
 import { LinkIcon, CopyIcon } from './Icons';
-
-declare global {
-  interface Window {
-    Hls: any;
-  }
-}
+import Hls from 'hls.js';
 
 interface VideoPlayerProps {
   video: VideoItem;
@@ -22,10 +17,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, episodes, initialEpiso
   const [error, setError] = useState<string | null>(null);
   const [showAllEpisodes, setShowAllEpisodes] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
-  const hlsRef = useRef<any>(null);
+  const hlsRef = useRef<Hls | null>(null);
 
   useEffect(() => {
-    let currentHls: any = null;
+    let currentHls: Hls | null = null;
 
     const playVideo = (rawUrl: string) => {
       setError(null);
@@ -41,22 +36,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, episodes, initialEpiso
       let url = rawUrl;
 
       // Optimization 1: Force HTTPS if on HTTPS
-      // Many resource providers support HTTPS but return HTTP links. 
-      // Browsers block HTTP media on HTTPS pages (Mixed Content).
       if (window.location.protocol === 'https:' && url.startsWith('http:')) {
            url = url.replace('http:', 'https:');
            console.log("Auto-upgrading video URL to HTTPS:", url);
       }
 
       // Optimization 2: HLS Configuration
-      if (window.Hls && window.Hls.isSupported() && (url.includes('.m3u8') || !url.includes('.mp4'))) {
-        const hls = new window.Hls({
-            // Tweaks for stability
+      if (Hls.isSupported() && (url.includes('.m3u8') || !url.includes('.mp4'))) {
+        const hls = new Hls({
             maxMaxBufferLength: 30,
             maxBufferLength: 10,
             enableWorker: true,
             lowLatencyMode: false,
-            // Try to avoid CORS issues if possible, though mostly server-side
             xhrSetup: function (xhr: any, url: string) {
                 xhr.withCredentials = false; 
             }
@@ -67,19 +58,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, episodes, initialEpiso
         hls.loadSource(url);
         hls.attachMedia(videoEl);
         
-        hls.on(window.Hls.Events.MANIFEST_PARSED, () => {
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
           videoEl.play().catch(e => console.warn("Auto-play blocked", e));
         });
 
-        // Optimization 3: Aggressive Error Recovery
-        hls.on(window.Hls.Events.ERROR, (event: any, data: any) => {
+        hls.on(Hls.Events.ERROR, (event: any, data: any) => {
             if (data.fatal) {
                 switch (data.type) {
-                case window.Hls.ErrorTypes.NETWORK_ERROR:
+                case Hls.ErrorTypes.NETWORK_ERROR:
                     console.error("Network error, trying to recover...");
                     hls.startLoad();
                     break;
-                case window.Hls.ErrorTypes.MEDIA_ERROR:
+                case Hls.ErrorTypes.MEDIA_ERROR:
                     console.error("Media error, trying to recover...");
                     hls.recoverMediaError();
                     break;
@@ -202,8 +192,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, episodes, initialEpiso
                     className="w-full h-full max-h-full" 
                     controls 
                     playsInline 
-                    // Important for privacy and some anti-leeching checks
-                    // referrerPolicy is removed as it's not standard for video tag and caused TS error
                     poster={video.vod_pic}
                     crossOrigin="anonymous"
                 />

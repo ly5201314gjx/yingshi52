@@ -2,29 +2,42 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4fd.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    
+    <!-- PWA Settings -->
+    <meta name="description" content="暴躁影视 - 极简看片" />
+    <meta name="theme-color" content="#fcfbf9" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="暴躁影视" />
+    <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4fd.png" />
+
     <title>暴躁影视</title>
+    <!-- Tailwind CSS (Cached by Service Worker) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
       body {
-        font-family: 'Comic Sans MS', 'Chalkboard SE', system-ui, -apple-system, sans-serif; /* Fallback to system sans */
-        background-color: #fcfbf9; /* Off-white paper */
+        font-family: 'Comic Sans MS', 'Chalkboard SE', system-ui, -apple-system, sans-serif;
+        background-color: #fcfbf9;
         color: #1a1a1a;
-        /* Comic Dot Pattern Background */
         background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
         background-size: 20px 20px;
+        overscroll-behavior-y: none; /* Prevent pull-to-refresh on mobile */
       }
       
-      /* Hide scrollbar */
       .scrollbar-hide::-webkit-scrollbar { display: none; }
       .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-      /* Comic Input Focus */
       input:focus {
         outline: none;
         box-shadow: 4px 4px 0px 0px #3b82f6;
         transform: translate(-2px, -2px);
+      }
+      
+      /* Safe area for mobile PWA */
+      .pb-safe {
+          padding-bottom: env(safe-area-inset-bottom);
       }
     </style>
   <script type="importmap">
@@ -32,12 +45,17 @@
   "imports": {
     "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/"
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "hls.js": "https://esm.sh/hls.js@^1.6.15",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0"
   }
 }
 </script>
 </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>

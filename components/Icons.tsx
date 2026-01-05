@@ -3,7 +3,7 @@ import React from 'react';
 // Removed brackets [] for a cleaner, fresher look
 
 export const SearchIcon = ({ className }: { className?: string }) => (
-  <span className={`font-medium ${className}`}>搜片</span>
+  <span className={`font-medium ${className}`}>🔍</span>
 );
 
 export const HeartIcon = ({ className, fill }: { className?: string; fill?: boolean }) => (
@@ -13,7 +13,7 @@ export const HeartIcon = ({ className, fill }: { className?: string; fill?: bool
 );
 
 export const SettingsIcon = ({ className }: { className?: string }) => (
-  <span className={`font-medium ${className}`}>换源</span>
+  <span className={`font-medium ${className}`}>⚙️</span>
 );
 
 export const PlayIcon = ({ className, fill }: { className?: string; fill?: boolean }) => (
@@ -25,25 +25,29 @@ export const XIcon = ({ className }: { className?: string }) => (
 );
 
 export const MenuIcon = ({ className }: { className?: string }) => (
-    <span className={`font-medium ${className}`}>菜单</span>
+    <span className={`font-medium ${className}`}>☰</span>
 );
 
 export const InfoIcon = ({ className }: { className?: string }) => (
-    <span className={`font-medium ${className}`}>详情</span>
+    <span className={`font-medium ${className}`}>ℹ️</span>
 );
 
 export const LinkIcon = ({ className }: { className?: string }) => (
-    <span className={`font-medium text-xs ${className}`}>链接</span>
+    <span className={`font-medium text-xs ${className}`}>🔗</span>
 );
 
 export const CopyIcon = ({ className }: { className?: string }) => (
-    <span className={`font-medium text-xs ${className}`}>复制</span>
+    <span className={`font-medium text-xs ${className}`}>📋</span>
 );
 
 export const TrashIcon = ({ className }: { className?: string }) => (
-    <span className={`font-medium text-xs ${className}`}>删除</span>
+    <span className={`font-medium text-xs ${className}`}>🗑️</span>
 );
 
 export const ExportIcon = ({ className }: { className?: string }) => (
-    <span className={`font-medium text-xs ${className}`}>导出Word</span>
+    <span className={`font-medium text-xs ${className}`}>📤</span>
+);
+
+export const FilterIcon = ({ className }: { className?: string }) => (
+    <span className={`font-medium ${className}`}>⚡</span>
 );

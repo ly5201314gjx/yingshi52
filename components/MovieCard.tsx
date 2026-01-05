@@ -1,6 +1,7 @@
 import React from 'react';
 import { VideoItem } from '../types';
-import { HeartIcon, InfoIcon } from './Icons';
+import { HeartIcon, PlayIcon } from './Icons';
+import LazyImage from './LazyImage';
 
 interface MovieCardProps {
   video: VideoItem;
@@ -10,61 +11,56 @@ interface MovieCardProps {
   onShowDetails: (e: React.MouseEvent) => void;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ video, onClick, isFavorite, onToggleFav, onShowDetails }) => {
+const MovieCard: React.FC<MovieCardProps> = ({ video, onClick, isFavorite, onToggleFav }) => {
   return (
     <div 
-        className="group relative flex flex-col cursor-pointer bg-white rounded-xl border-2 border-stone-800 shadow-[4px_4px_0px_0px_rgba(28,25,23,0.15)] hover:shadow-[6px_6px_0px_0px_rgba(28,25,23,1)] hover:-translate-y-1 transition-all duration-200 overflow-hidden"
+        className="group relative flex flex-col cursor-pointer bg-transparent"
         onClick={onClick}
     >
-      <div className="relative w-full aspect-[2/3] bg-stone-100 overflow-hidden border-b-2 border-stone-800">
-        <img 
+      {/* Image Container with Organic Radius and Shadow */}
+      <div className="relative w-full aspect-[2/3] overflow-hidden rounded-2xl shadow-[0_8px_20px_rgba(0,0,0,0.06)] bg-stone-100 transition-all duration-500 group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.1)] group-hover:-translate-y-1">
+        <LazyImage 
             src={video.vod_pic} 
             alt={video.vod_name}
-            loading="lazy"
-            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-            onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://placehold.co/300x450/f5f5f4/57534e?text=No+Cover';
-            }}
+            className="group-hover:scale-105 transition-transform duration-1000 ease-out"
         />
         
-        {/* Rating Badge - Comic Bubble */}
+        {/* Elegant Rating Tag */}
         {video.vod_score && (
-            <div className="absolute top-2 right-2 bg-yellow-300 border-2 border-black text-black text-xs font-black px-2 py-1 rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] z-10 rotate-3">
+            <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-stone-800 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm z-10 tracking-wide">
                 {video.vod_score}
             </div>
         )}
 
-        {/* Details Button */}
-        <button 
-            onClick={(e) => {
-                e.stopPropagation();
-                onShowDetails(e);
-            }}
-            className="absolute top-2 left-2 bg-white border-2 border-black text-black p-1.5 rounded-full hover:bg-blue-300 transition-colors z-10 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] opacity-0 group-hover:opacity-100"
-            title="详情"
-        >
-            <InfoIcon className="text-xs" />
-        </button>
-
-        {/* Gradient Overlay */}
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        {/* Play Button Overlay - Centered and Minimal */}
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-white/90 backdrop-blur shadow-lg flex items-center justify-center text-stone-800 scale-90 group-hover:scale-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+                <PlayIcon className="ml-1 w-5 h-5 text-stone-800" />
+            </div>
+        </div>
       </div>
 
-      <div className="p-3 bg-white flex justify-between items-start gap-2">
-        <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-bold text-stone-900 leading-tight truncate">
+      {/* Info Content - Editorial Style */}
+      <div className="mt-3 px-1 flex flex-col gap-1">
+        <div className="flex justify-between items-start gap-3">
+            <h3 className="text-[15px] font-serif font-bold text-stone-800 leading-snug truncate flex-1 group-hover:text-amber-700 transition-colors">
                 {video.vod_name}
             </h3>
-            <p className="text-xs text-stone-500 truncate mt-1 font-medium bg-stone-100 inline-block px-1 rounded border border-stone-300">
-                {video.vod_remarks || '更新中'}
-            </p>
+            <button 
+                onClick={onToggleFav}
+                className="text-stone-300 hover:text-rose-500 transition-colors active:scale-95 pt-0.5"
+            >
+                <HeartIcon className="text-base" fill={isFavorite} />
+            </button>
         </div>
-        <button 
-            onClick={onToggleFav}
-            className="mt-1 hover:scale-110 transition-transform active:scale-90"
-        >
-            <HeartIcon className="" fill={isFavorite} />
-        </button>
+        
+        <div className="flex items-center gap-2 text-[11px] text-stone-500 font-medium">
+            <span className="bg-stone-100 px-2 py-0.5 rounded-md text-stone-600 truncate max-w-[40%]">
+                {video.vod_class?.split(' ')[0] || '影视'}
+            </span>
+            <span className="w-1 h-1 rounded-full bg-stone-300"></span>
+            <span className="truncate flex-1 font-light tracking-wide">{video.vod_remarks || '更新中'}</span>
+        </div>
       </div>
     </div>
   );

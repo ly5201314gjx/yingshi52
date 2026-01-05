@@ -7,37 +7,99 @@
     
     <!-- PWA Settings -->
     <meta name="description" content="暴躁影视 - 极简看片" />
-    <meta name="theme-color" content="#fcfbf9" />
+    <meta name="theme-color" content="#FDFCF8" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="暴躁影视" />
     <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4fd.png" />
 
     <title>暴躁影视</title>
-    <!-- Tailwind CSS (Cached by Service Worker) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter (UI) & Noto Serif SC (Headings) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
+      :root {
+        --bg-warm: #FDFCF8; /* Warm Paper */
+        --bg-surface: #FFFFFF;
+        --text-main: #292524; /* Warm Stone 800 */
+        --text-muted: #78716c; /* Stone 500 */
+        --accent: #d97706; /* Muted Amber */
+      }
+
       body {
-        font-family: 'Comic Sans MS', 'Chalkboard SE', system-ui, -apple-system, sans-serif;
-        background-color: #fcfbf9;
-        color: #1a1a1a;
-        background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
-        background-size: 20px 20px;
-        overscroll-behavior-y: none; /* Prevent pull-to-refresh on mobile */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--bg-warm);
+        color: var(--text-main);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      
+      /* Serif font class for Headings */
+      .font-serif {
+        font-family: 'Noto Serif SC', 'Songti SC', serif;
+      }
+
+      /* Soft Paper Texture */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: multiply;
       }
       
       .scrollbar-hide::-webkit-scrollbar { display: none; }
       .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+      /* Elegant Scrollbar */
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #e7e5e4; 
+        border-radius: 20px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #d6d3d1; 
+      }
+
       input:focus {
         outline: none;
-        box-shadow: 4px 4px 0px 0px #3b82f6;
-        transform: translate(-2px, -2px);
       }
       
-      /* Safe area for mobile PWA */
       .pb-safe {
           padding-bottom: env(safe-area-inset-bottom);
+      }
+      
+      /* Organic Glass Panel */
+      .panel-organic {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+      }
+      
+      /* Floating Card Style */
+      .card-organic {
+        background: #FFFFFF;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+      
+      .card-organic:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
       }
     </style>
   <script type="importmap">

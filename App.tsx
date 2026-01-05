@@ -123,13 +123,15 @@ function App() {
     setLoading(true);
     const startTime = performance.now();
     try {
-      const data = await getVideoList(currentSource.url, pageNum, cat || undefined, search);
+      // Basic trim
+      const cleanSearch = search.trim();
+      const data = await getVideoList(currentSource.url, pageNum, cat || undefined, cleanSearch);
       const endTime = performance.now();
       setApiStats({ total: data.total || 0, latency: Math.round(endTime - startTime) });
       setVideos(data.list || []);
       setPage(pageNum);
       setJumpPage(pageNum.toString());
-      setKeyword(search);
+      setKeyword(cleanSearch);
       setSelectedCategory(cat);
     } catch (err) {
       console.error(err);
@@ -156,6 +158,18 @@ function App() {
       if (searchInputRef.current) searchInputRef.current.value = val;
       if (mobileSearchInputRef.current) mobileSearchInputRef.current.value = val;
       if (mobileSearchInputRef.current) mobileSearchInputRef.current.blur();
+  };
+  
+  const handleSwitchSourceSearch = (source: ApiSource) => {
+      setCurrentSource(source);
+      // The useEffect on currentSource will trigger fetchData(1, '', null) normally,
+      // but we want to preserve the keyword.
+      // We handle this by setting a temp state or just letting the user know they switched.
+      // A better way: Set source, then timeout to search
+      // Actually, since useEffect triggers hardReset, we need to modify hardReset or just use a small hack:
+      setTimeout(() => {
+          fetchData(1, keyword, null);
+      }, 100);
   };
 
   const handleCategorySelect = (catId: number) => {
@@ -474,10 +488,29 @@ function App() {
                 ))}
             </div>
         ) : (
-            <div className="flex flex-col items-center justify-center py-40 text-stone-400">
+            <div className="flex flex-col items-center justify-center py-20 text-stone-400">
                 <div className="text-7xl mb-6 opacity-20 grayscale">🌿</div>
-                <p className="font-serif text-xl text-stone-500 italic">No discoveries yet.</p>
-                {!showFavorites && <button onClick={hardReset} className="mt-8 px-8 py-3 bg-stone-900 hover:bg-stone-800 text-white rounded-full text-sm font-bold tracking-wide transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">Explore All</button>}
+                <p className="font-serif text-xl text-stone-500 italic mb-2">{keyword ? 'No results found.' : 'No discoveries yet.'}</p>
+                
+                {/* IMPROVED RETRIEVAL: Suggest switching sources if search comes up empty */}
+                {keyword && !loading && (
+                    <div className="mt-8 max-w-lg w-full px-4 text-center">
+                        <p className="text-xs font-bold uppercase tracking-widest text-stone-400 mb-4">Try searching in other libraries</p>
+                        <div className="flex flex-wrap gap-2 justify-center">
+                            {sources.filter(s => s.url !== currentSource.url).map((src, idx) => (
+                                <button 
+                                    key={idx}
+                                    onClick={() => handleSwitchSourceSearch(src)}
+                                    className="px-4 py-2 rounded-full border border-stone-200 text-stone-600 text-xs font-bold hover:bg-stone-900 hover:text-white hover:border-stone-900 transition-all shadow-sm"
+                                >
+                                    Search in {src.name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {!keyword && !showFavorites && <button onClick={hardReset} className="mt-8 px-8 py-3 bg-stone-900 hover:bg-stone-800 text-white rounded-full text-sm font-bold tracking-wide transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">Explore All</button>}
             </div>
         )}
 
